@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="LeapSDK">
+    <CLASSES />
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://$PROJECT_DIR$/lib/LeapSDK/lib/x64" />
+    </NATIVE>
+    <SOURCES />
+  </library>
+</component>

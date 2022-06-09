@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.fhkiel.seg.i3-3</groupId>
+    <artifactId>TheBlinkingLightHouse3000</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.leapmotion.leap</groupId>
+            <artifactId>leapMotion</artifactId>
+            <scope>system</scope>
+            <version>3.2.1</version>
+            <systemPath>${project.basedir}/lib/LeapSDK/lib/LeapJava.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.illposed.osc</groupId>
+            <artifactId>javaosc-core</artifactId>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/javaosc-core-0.8.jar</systemPath>
+            <version>0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <type>bundle</type>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/json-20220320.jar</systemPath>
+            <version>20220320</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>2.0.0-alpha7</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>2.0.0-alpha7</version>
+        </dependency>
+    </dependencies>
+
+</project>
