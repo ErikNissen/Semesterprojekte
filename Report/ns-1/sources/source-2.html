@@ -1,0 +1,364 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LeapMotion</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">LeapMotion</a>
+</div>
+
+<h1>Coverage Summary for Class: LeapMotion (LeapMotion)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LeapMotion</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (4/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19,8%
+  </span>
+  <span class="absValue">
+    (20/101)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LeapMotion$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    30,8%
+  </span>
+  <span class="absValue">
+    (4/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19,6%
+  </span>
+  <span class="absValue">
+    (20/102)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package LeapMotion;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import com.leapmotion.leap.*;
+<i class="no-highlight">4</i>&nbsp;import java.awt.*;
+<i class="no-highlight">5</i>&nbsp;import java.util.Arrays;
+<i class="no-highlight">6</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">7</i>&nbsp;import java.util.List;
+<i class="no-highlight">8</i>&nbsp;import java.util.Map;
+<i class="no-highlight">9</i>&nbsp;import com.leapmotion.leap.Frame;
+<i class="no-highlight">10</i>&nbsp;import org.json.JSONObject;
+<i class="no-highlight">11</i>&nbsp;
+<i class="no-highlight">12</i>&nbsp;
+<b class="fc"><i class="no-highlight">13</i>&nbsp;public class LeapMotion {</b>
+<i class="no-highlight">14</i>&nbsp;    private final LeapListner lis;
+<i class="no-highlight">15</i>&nbsp;
+<i class="no-highlight">16</i>&nbsp;    private static Controller con;
+<i class="no-highlight">17</i>&nbsp;
+<i class="no-highlight">18</i>&nbsp;    //Constructor
+<b class="fc"><i class="no-highlight">19</i>&nbsp;    public LeapMotion() {</b>
+<b class="fc"><i class="no-highlight">20</i>&nbsp;        lis = new LeapListner();</b>
+<b class="fc"><i class="no-highlight">21</i>&nbsp;        con = new Controller(lis);</b>
+<b class="fc"><i class="no-highlight">22</i>&nbsp;        con.enableGesture(Gesture.Type.TYPE_CIRCLE);</b>
+<i class="no-highlight">23</i>&nbsp;    }
+<i class="no-highlight">24</i>&nbsp;
+<i class="no-highlight">25</i>&nbsp;    public Controller getCon() {
+<b class="nc"><i class="no-highlight">26</i>&nbsp;        return con;</b>
+<i class="no-highlight">27</i>&nbsp;    }
+<i class="no-highlight">28</i>&nbsp;
+<i class="no-highlight">29</i>&nbsp;    /**
+<i class="no-highlight">30</i>&nbsp;     * @return rgb color
+<i class="no-highlight">31</i>&nbsp;     * */
+<i class="no-highlight">32</i>&nbsp;    public JSONObject colorPicker(int brightness, Gesture gesture){
+<b class="nc"><i class="no-highlight">33</i>&nbsp;        JSONObject color = new JSONObject();</b>
+<b class="nc"><i class="no-highlight">34</i>&nbsp;        color.put(&quot;red&quot;, 0);</b>
+<b class="nc"><i class="no-highlight">35</i>&nbsp;        color.put(&quot;green&quot;, 0);</b>
+<b class="nc"><i class="no-highlight">36</i>&nbsp;        color.put(&quot;blue&quot;, 0);</b>
+<i class="no-highlight">37</i>&nbsp;
+<i class="no-highlight">38</i>&nbsp;        //get the circle gesture
+<b class="nc"><i class="no-highlight">39</i>&nbsp;        CircleGesture circle = new CircleGesture(gesture);</b>
+<i class="no-highlight">40</i>&nbsp;
+<i class="no-highlight">41</i>&nbsp;        //get the pointable
+<b class="nc"><i class="no-highlight">42</i>&nbsp;        Pointable pointable = circle.pointable();</b>
+<i class="no-highlight">43</i>&nbsp;
+<i class="no-highlight">44</i>&nbsp;        //get the direction of the pointable
+<b class="nc"><i class="no-highlight">45</i>&nbsp;        Vector direction = pointable.direction();</b>
+<i class="no-highlight">46</i>&nbsp;
+<i class="no-highlight">47</i>&nbsp;        //get the angle of the direction
+<b class="nc"><i class="no-highlight">48</i>&nbsp;        float angle = direction.angleTo(circle.normal());</b>
+<i class="no-highlight">49</i>&nbsp;
+<i class="no-highlight">50</i>&nbsp;        //get the angle in degrees
+<b class="nc"><i class="no-highlight">51</i>&nbsp;        angle = (float) Math.toDegrees(angle);</b>
+<i class="no-highlight">52</i>&nbsp;
+<i class="no-highlight">53</i>&nbsp;        //convert hsb to rgb
+<b class="nc"><i class="no-highlight">54</i>&nbsp;        int[] rgb = hsb2rgb((int) (angle / 360), 100, brightness);</b>
+<i class="no-highlight">55</i>&nbsp;
+<i class="no-highlight">56</i>&nbsp;        //set the values in the json object
+<b class="nc"><i class="no-highlight">57</i>&nbsp;        color.put(&quot;red&quot;, rgb[0]);</b>
+<b class="nc"><i class="no-highlight">58</i>&nbsp;        color.put(&quot;green&quot;, rgb[1]);</b>
+<b class="nc"><i class="no-highlight">59</i>&nbsp;        color.put(&quot;blue&quot;, rgb[2]);</b>
+<i class="no-highlight">60</i>&nbsp;
+<b class="nc"><i class="no-highlight">61</i>&nbsp;        return color;</b>
+<i class="no-highlight">62</i>&nbsp;    }
+<i class="no-highlight">63</i>&nbsp;
+<i class="no-highlight">64</i>&nbsp;    private int[] hsb2rgb(int hue, int saturation, int brightness) {
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        if(hue &lt; 0 || saturation &lt; 0 || brightness &lt; 0) {</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;            return null;</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        }else if(hue &gt; 360 || saturation &gt; 100 || brightness &gt; 100) {</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;            return null;</b>
+<i class="no-highlight">69</i>&nbsp;        }
+<i class="no-highlight">70</i>&nbsp;
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        int rgb = Color.HSBtoRGB(hue / 360.0f, saturation / 100.0f, brightness / 100.0f);</b>
+<b class="fc"><i class="no-highlight">72</i>&nbsp;        Color c = new Color(rgb);</b>
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        return new int[]{c.getRed(), c.getGreen(), c.getBlue()};</b>
+<i class="no-highlight">74</i>&nbsp;    }
+<i class="no-highlight">75</i>&nbsp;
+<i class="no-highlight">76</i>&nbsp;    /**
+<i class="no-highlight">77</i>&nbsp;     * @return Handdaten
+<i class="no-highlight">78</i>&nbsp;     * */
+<i class="no-highlight">79</i>&nbsp;    public JSONObject getData() {
+<b class="nc"><i class="no-highlight">80</i>&nbsp;        JSONObject data = new JSONObject();</b>
+<b class="nc"><i class="no-highlight">81</i>&nbsp;        JSONObject leftHand = new JSONObject();</b>
+<b class="nc"><i class="no-highlight">82</i>&nbsp;        JSONObject rightHand = new JSONObject();</b>
+<i class="no-highlight">83</i>&nbsp;        /*
+<i class="no-highlight">84</i>&nbsp;         * INDEX = Zeigefinger
+<i class="no-highlight">85</i>&nbsp;         * THUMB = Daumen
+<i class="no-highlight">86</i>&nbsp;         * MIDDLE = Mittelfinger
+<i class="no-highlight">87</i>&nbsp;         * PINKY = kleiner Finger
+<i class="no-highlight">88</i>&nbsp;         * RING = Ringfinger
+<i class="no-highlight">89</i>&nbsp;         * */
+<b class="nc"><i class="no-highlight">90</i>&nbsp;        Frame frame = con.frame();</b>
+<b class="nc"><i class="no-highlight">91</i>&nbsp;        for (Hand h : frame.hands()) {</b>
+<i class="no-highlight">92</i>&nbsp;
+<b class="nc"><i class="no-highlight">93</i>&nbsp;            if (h.isLeft()) {</b>
+<i class="no-highlight">94</i>&nbsp;
+<b class="nc"><i class="no-highlight">95</i>&nbsp;                leftHand.put(&quot;Handflächenposition&quot;, h.palmPosition());</b>
+<b class="nc"><i class="no-highlight">96</i>&nbsp;                leftHand.put(&quot;Finger&quot;, getFingers(h));</b>
+<i class="no-highlight">97</i>&nbsp;            } else {
+<i class="no-highlight">98</i>&nbsp;
+<b class="nc"><i class="no-highlight">99</i>&nbsp;                rightHand.put(&quot;Handflächenposition&quot;, h.palmPosition());</b>
+<b class="nc"><i class="no-highlight">100</i>&nbsp;                rightHand.put(&quot;Finger&quot;, getFingers(h));</b>
+<i class="no-highlight">101</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">102</i>&nbsp;            data.put(&quot;Linke Hand&quot;, leftHand);</b>
+<b class="nc"><i class="no-highlight">103</i>&nbsp;            data.put(&quot;Rechte Hand&quot;, rightHand);</b>
+<b class="nc"><i class="no-highlight">104</i>&nbsp;        }</b>
+<b class="nc"><i class="no-highlight">105</i>&nbsp;        return data;</b>
+<i class="no-highlight">106</i>&nbsp;    }
+<i class="no-highlight">107</i>&nbsp;
+<i class="no-highlight">108</i>&nbsp;    /**
+<i class="no-highlight">109</i>&nbsp;     * @param data  Handdaten
+<i class="no-highlight">110</i>&nbsp;     * @param color RGB im Format 0 &gt;= {r, g, b} &lt;= 255 mit den keys &quot;red&quot;,
+<i class="no-highlight">111</i>&nbsp;     *              &quot;green&quot;, &quot;blue&quot;
+<i class="no-highlight">112</i>&nbsp;     * @return      JSONObject mit Koordinaten &amp; RGB Wert
+<i class="no-highlight">113</i>&nbsp;     */
+<i class="no-highlight">114</i>&nbsp;    public static JSONObject getParams(JSONObject data, JSONObject color) {
+<b class="nc"><i class="no-highlight">115</i>&nbsp;        assert color.has(&quot;red&quot;) &amp;&amp; color.has(&quot;green&quot;) &amp;&amp;</b>
+<b class="nc"><i class="no-highlight">116</i>&nbsp;                color.has(&quot;blue&quot;);</b>
+<b class="nc"><i class="no-highlight">117</i>&nbsp;        assert 0 &gt;= color.getInt(&quot;red&quot;) &amp;&amp; color.getInt(&quot;red&quot;) &lt;= 255;</b>
+<b class="nc"><i class="no-highlight">118</i>&nbsp;        assert 0 &gt;= color.getInt(&quot;green&quot;) &amp;&amp;</b>
+<b class="nc"><i class="no-highlight">119</i>&nbsp;                color.getInt(&quot;green&quot;) &lt;= 255;</b>
+<b class="nc"><i class="no-highlight">120</i>&nbsp;        assert 0 &gt;= color.getInt(&quot;blue&quot;) &amp;&amp;</b>
+<b class="nc"><i class="no-highlight">121</i>&nbsp;                color.getInt(&quot;blue&quot;) &lt;= 255;</b>
+<i class="no-highlight">122</i>&nbsp;
+<b class="nc"><i class="no-highlight">123</i>&nbsp;        boolean leftHand = data.getJSONObject(&quot;Linke Hand&quot;)</b>
+<b class="nc"><i class="no-highlight">124</i>&nbsp;                                .has(&quot;Finger&quot;);</b>
+<b class="nc"><i class="no-highlight">125</i>&nbsp;        List&lt;Byte&gt; coords = getCoords(leftHand, data, &quot;Zeigefinger&quot;);</b>
+<b class="nc"><i class="no-highlight">126</i>&nbsp;        JSONObject o = new JSONObject();</b>
+<b class="nc"><i class="no-highlight">127</i>&nbsp;        JSONObject map = new JSONObject();</b>
+<i class="no-highlight">128</i>&nbsp;
+<b class="nc"><i class="no-highlight">129</i>&nbsp;        o.put(&quot;x&quot;, coords.get(0));</b>
+<b class="nc"><i class="no-highlight">130</i>&nbsp;        o.put(&quot;y&quot;, coords.get(1));</b>
+<b class="nc"><i class="no-highlight">131</i>&nbsp;        o.put(&quot;r&quot;, color.getInt(&quot;red&quot;) / 100 * coords.get(2));</b>
+<b class="nc"><i class="no-highlight">132</i>&nbsp;        o.put(&quot;g&quot;, color.getInt(&quot;green&quot;) / 100 * coords.get(2));</b>
+<b class="nc"><i class="no-highlight">133</i>&nbsp;        o.put(&quot;b&quot;, color.getInt(&quot;blue&quot;) / 100 * coords.get(2));</b>
+<i class="no-highlight">134</i>&nbsp;
+<b class="nc"><i class="no-highlight">135</i>&nbsp;        map.put(&quot;param&quot;, o);</b>
+<b class="nc"><i class="no-highlight">136</i>&nbsp;        map.put(&quot;z&quot;, coords.get(2));</b>
+<i class="no-highlight">137</i>&nbsp;
+<b class="nc"><i class="no-highlight">138</i>&nbsp;        return map;</b>
+<i class="no-highlight">139</i>&nbsp;    }
+<i class="no-highlight">140</i>&nbsp;
+<i class="no-highlight">141</i>&nbsp;    /**
+<i class="no-highlight">142</i>&nbsp;     * @param f Finger
+<i class="no-highlight">143</i>&nbsp;     * @return  Fingerdaten
+<i class="no-highlight">144</i>&nbsp;     * */
+<i class="no-highlight">145</i>&nbsp;    private static Map&lt;String, Object&gt; parseData(Finger f) {
+<b class="nc"><i class="no-highlight">146</i>&nbsp;        Map&lt;String, Object&gt; data = new HashMap&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">147</i>&nbsp;        data.put(&quot;Position&quot;, f.tipPosition());</b>
+<b class="nc"><i class="no-highlight">148</i>&nbsp;        data.put(&quot;Raised&quot;, f.isExtended());</b>
+<b class="nc"><i class="no-highlight">149</i>&nbsp;        return data;</b>
+<i class="no-highlight">150</i>&nbsp;    }
+<i class="no-highlight">151</i>&nbsp;
+<i class="no-highlight">152</i>&nbsp;    /**
+<i class="no-highlight">153</i>&nbsp;     * @param h Hand
+<i class="no-highlight">154</i>&nbsp;     * @return  Liste mit den Fingerdaten
+<i class="no-highlight">155</i>&nbsp;     * */
+<i class="no-highlight">156</i>&nbsp;    private static JSONObject getFingers(Hand h){
+<b class="nc"><i class="no-highlight">157</i>&nbsp;        JSONObject data = new JSONObject();</b>
+<b class="nc"><i class="no-highlight">158</i>&nbsp;        for (Finger f : h.fingers()){</b>
+<i class="no-highlight">159</i>&nbsp;
+<b class="nc"><i class="no-highlight">160</i>&nbsp;            switch (f.type()) {</b>
+<b class="nc"><i class="no-highlight">161</i>&nbsp;                case TYPE_THUMB -&gt; data.put(&quot;Daumen&quot;, parseData(f));</b>
+<b class="nc"><i class="no-highlight">162</i>&nbsp;                case TYPE_INDEX -&gt; data.put(&quot;Zeigefinger&quot;, parseData(f));</b>
+<b class="nc"><i class="no-highlight">163</i>&nbsp;                case TYPE_MIDDLE -&gt; data.put(&quot;Mittelfinger&quot;, parseData(f));</b>
+<b class="nc"><i class="no-highlight">164</i>&nbsp;                case TYPE_RING -&gt; data.put(&quot;Ringfinger&quot;, parseData(f));</b>
+<b class="nc"><i class="no-highlight">165</i>&nbsp;                case TYPE_PINKY -&gt; data.put(&quot;kleiner Finger&quot;, parseData(f));</b>
+<i class="no-highlight">166</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">167</i>&nbsp;        }</b>
+<b class="nc"><i class="no-highlight">168</i>&nbsp;        return data;</b>
+<i class="no-highlight">169</i>&nbsp;    }
+<i class="no-highlight">170</i>&nbsp;
+<i class="no-highlight">171</i>&nbsp;    /**
+<i class="no-highlight">172</i>&nbsp;     * @param left      true = linke Hand, false = rechte Hand
+<i class="no-highlight">173</i>&nbsp;     * @param finger    Fingerdaten
+<i class="no-highlight">174</i>&nbsp;     * @param data      Handdaten
+<i class="no-highlight">175</i>&nbsp;     * @param axis      x, y, z
+<i class="no-highlight">176</i>&nbsp;     * @return          Coordinate like x, y or z
+<i class="no-highlight">177</i>&nbsp;     * */
+<i class="no-highlight">178</i>&nbsp;    private static int getCoord(boolean left, String finger, JSONObject data,
+<i class="no-highlight">179</i>&nbsp;                                String axis){
+<b class="fc"><i class="no-highlight">180</i>&nbsp;        byte iterations = 100;</b>
+<b class="fc"><i class="no-highlight">181</i>&nbsp;        int avg = 0;</b>
+<i class="no-highlight">182</i>&nbsp;
+<b class="fc"><i class="no-highlight">183</i>&nbsp;        for(byte i = 0; i &lt; iterations; i++){</b>
+<i class="no-highlight">184</i>&nbsp;
+<b class="fc"><i class="no-highlight">185</i>&nbsp;            avg += data.getJSONObject(left ? &quot;Linke Hand&quot; : &quot;Rechte Hand&quot;)</b>
+<b class="fc"><i class="no-highlight">186</i>&nbsp;                    .getJSONObject(&quot;Finger&quot;)</b>
+<b class="fc"><i class="no-highlight">187</i>&nbsp;                    .getJSONObject(finger).getJSONObject(&quot;Position&quot;)</b>
+<b class="fc"><i class="no-highlight">188</i>&nbsp;                    .getInt(axis);</b>
+<i class="no-highlight">189</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">190</i>&nbsp;        return avg / iterations;</b>
+<i class="no-highlight">191</i>&nbsp;    }
+<i class="no-highlight">192</i>&nbsp;
+<i class="no-highlight">193</i>&nbsp;    /**
+<i class="no-highlight">194</i>&nbsp;     * @param left      true = linke Hand, false = rechte Hand
+<i class="no-highlight">195</i>&nbsp;     * @param data      Handdaten
+<i class="no-highlight">196</i>&nbsp;     * @param finger    Finger
+<i class="no-highlight">197</i>&nbsp;     * @return          List of coords
+<i class="no-highlight">198</i>&nbsp;     * */
+<i class="no-highlight">199</i>&nbsp;    private static List&lt;Byte&gt; getCoords(boolean left, JSONObject data,
+<i class="no-highlight">200</i>&nbsp;                                        String finger){
+<i class="no-highlight">201</i>&nbsp;
+<i class="no-highlight">202</i>&nbsp;        //Map the coordinates to LightHouse size
+<i class="no-highlight">203</i>&nbsp;        byte xCoord, yCoord, zCoord;
+<b class="nc"><i class="no-highlight">204</i>&nbsp;        xCoord = (byte) (getCoord(left, finger, data, &quot;x&quot;) % 35);</b>
+<b class="nc"><i class="no-highlight">205</i>&nbsp;        if (xCoord &lt; 0) xCoord *= -1;</b>
+<b class="nc"><i class="no-highlight">206</i>&nbsp;        yCoord = (byte) (getCoord(left, finger, data, &quot;y&quot;) % 8);</b>
+<b class="nc"><i class="no-highlight">207</i>&nbsp;        if (yCoord &lt; 0) yCoord *= -1;</b>
+<b class="nc"><i class="no-highlight">208</i>&nbsp;        zCoord = (byte) (getCoord(left, finger, data, &quot;z&quot;) % 100);</b>
+<b class="nc"><i class="no-highlight">209</i>&nbsp;        if (zCoord &lt; 0) zCoord *= -1;</b>
+<b class="nc"><i class="no-highlight">210</i>&nbsp;        return List.of(xCoord, yCoord, zCoord);</b>
+<i class="no-highlight">211</i>&nbsp;    }
+<i class="no-highlight">212</i>&nbsp;
+<i class="no-highlight">213</i>&nbsp;    /**
+<i class="no-highlight">214</i>&nbsp;     * Main Methode
+<i class="no-highlight">215</i>&nbsp;     * */
+<i class="no-highlight">216</i>&nbsp;    public void main(String[] args) {
+<b class="nc"><i class="no-highlight">217</i>&nbsp;        LeapMotion lm = new LeapMotion();</b>
+<b class="nc"><i class="no-highlight">218</i>&nbsp;        con.addListener(lis);</b>
+<i class="no-highlight">219</i>&nbsp;
+<b class="nc"><i class="no-highlight">220</i>&nbsp;        JSONObject data = new JSONObject();</b>
+<b class="nc"><i class="no-highlight">221</i>&nbsp;        JSONObject color = new JSONObject();</b>
+<b class="nc"><i class="no-highlight">222</i>&nbsp;        color.put(&quot;red&quot;, 100);</b>
+<b class="nc"><i class="no-highlight">223</i>&nbsp;        color.put(&quot;green&quot;, 60);</b>
+<b class="nc"><i class="no-highlight">224</i>&nbsp;        color.put(&quot;blue&quot;, 25);</b>
+<i class="no-highlight">225</i>&nbsp;
+<b class="nc"><i class="no-highlight">226</i>&nbsp;        while (data.isEmpty()){</b>
+<i class="no-highlight">227</i>&nbsp;
+<b class="nc"><i class="no-highlight">228</i>&nbsp;            data = lm.getData();</b>
+<i class="no-highlight">229</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">230</i>&nbsp;        System.out.println(data.toString(4));</b>
+<b class="nc"><i class="no-highlight">231</i>&nbsp;        System.out.println(getParams(data, color));</b>
+<i class="no-highlight">232</i>&nbsp;    }
+<i class="no-highlight">233</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-06-19 12:38</div>
+</div>
+</body>
+</html>

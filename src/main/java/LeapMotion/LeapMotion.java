@@ -1,20 +1,19 @@
 package LeapMotion;
 
 import com.leapmotion.leap.*;
-
 import java.awt.*;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import com.leapmotion.leap.Frame;
+import com.leapmotion.leap.Vector;
 import org.json.JSONObject;
 
 
 public class LeapMotion {
     private final LeapListner lis;
-    private final Controller con;
+
+    private static Controller con;
 
     //Constructor
     public LeapMotion() {
@@ -23,43 +22,76 @@ public class LeapMotion {
         con.enableGesture(Gesture.Type.TYPE_CIRCLE);
     }
 
+    public Controller getCon() {
+        return con;
+    }
+
     /**
-     * @return hue value of the HSB color space
+     * @return rgb color
      * */
-    public JSONObject colorPicker(int brightness){
+    public JSONObject colorPicker(int brightness, Gesture gesture){
         JSONObject color = new JSONObject();
         color.put("red", 0);
         color.put("green", 0);
         color.put("blue", 0);
-        //if gesture is detected
-        if (con.frame().gestures().count() > 0) {
-            //get the first gesture
-            Gesture gesture = con.frame().gestures().get(0);
-            //if the gesture is a circle
-            if (gesture.type() == Gesture.Type.TYPE_CIRCLE) {
-                //get the circle gesture
-                CircleGesture circle = new CircleGesture(gesture);
-                //get the pointable
-                Pointable pointable = circle.pointable();
-                //get the direction of the pointable
-                Vector direction = pointable.direction();
-                //get the angle of the direction
-                float angle = direction.angleTo(circle.normal());
-                //get the angle in degrees
-                angle = (float) Math.toDegrees(angle);
-                //convert hsb to rgb
-                int rgb = Color.HSBtoRGB((int) (angle / 360), 100, brightness);
-                //get the rgb values
-                int r = (rgb >> 16) & 0xFF;
-                int g = (rgb >> 8) & 0xFF;
-                int b = rgb & 0xFF;
-                //set the values in the json object
-                color.put("red", r);
-                color.put("green", g);
-                color.put("blue", b);
+
+        //get the circle gesture
+        CircleGesture circle = new CircleGesture(gesture);
+
+        //get the pointable
+        Pointable pointable = circle.pointable();
+
+        //get the direction of the pointable
+        Vector direction = pointable.direction();
+
+        //get the angle of the direction
+        float angle = direction.angleTo(circle.normal());
+
+        //get the angle in degrees
+        angle = (float) Math.toDegrees(angle);
+
+        System.out.println("Angle: " + angle);
+        //convert hsb to rgb
+        int[] rgb = null;
+        byte trys = 0;
+        while (rgb == null) {
+            rgb = hsb2rgb((int) (angle / 360), 100, brightness);
+            trys++;
+            if(trys > 10){
+                System.out.println("Could not convert to rgb");
+                System.out.println("Generating random color");
+                break;
             }
         }
+        //generate random color if rgb is null
+        if(rgb == null){
+            Random r = new Random();
+            rgb = new int[3];
+            rgb[0] = r.nextInt(255);
+            rgb[1] = r.nextInt(255);
+            rgb[2] = r.nextInt(255);
+        }
+
+        System.out.println("RGB: " + Arrays.toString(rgb));
+
+        //set the values in the json object
+        color.put("red", rgb[0]);
+        color.put("green", rgb[1]);
+        color.put("blue", rgb[2]);
+
         return color;
+    }
+
+    private int[] hsb2rgb(int hue, int saturation, int brightness) {
+        if(hue < 0 || saturation < 0 || brightness < 0) {
+            return null;
+        }else if(hue > 360 || saturation > 100 || brightness > 100) {
+            return null;
+        }
+
+        int rgb = Color.HSBtoRGB(hue, saturation / 100.0f, brightness / 100.0f);
+        Color c = new Color(rgb);
+        return new int[]{c.getRed(), c.getGreen(), c.getBlue()};
     }
 
     /**
@@ -76,12 +108,15 @@ public class LeapMotion {
          * PINKY = kleiner Finger
          * RING = Ringfinger
          * */
-        Frame frame = this.con.frame();
+        Frame frame = con.frame();
         for (Hand h : frame.hands()) {
+
             if (h.isLeft()) {
+
                 leftHand.put("Handflächenposition", h.palmPosition());
                 leftHand.put("Finger", getFingers(h));
             } else {
+
                 rightHand.put("Handflächenposition", h.palmPosition());
                 rightHand.put("Finger", getFingers(h));
             }
@@ -93,16 +128,21 @@ public class LeapMotion {
 
     /**
      * @param data  Handdaten
-     * @param color RGB im Format 0 >= {r, g, b} <= 255 mit den keys "red", "green", "blue"
+     * @param color RGB im Format 0 >= {r, g, b} <= 255 mit den keys "red",
+     *              "green", "blue"
      * @return      JSONObject mit Koordinaten & RGB Wert
      */
     public static JSONObject getParams(JSONObject data, JSONObject color) {
-        assert color.has("red") && color.has("green") && color.has("blue");
+        assert color.has("red") && color.has("green") &&
+                color.has("blue");
         assert 0 >= color.getInt("red") && color.getInt("red") <= 255;
-        assert 0 >= color.getInt("green") && color.getInt("green") <= 255;
-        assert 0 >= color.getInt("blue") && color.getInt("blue") <= 255;
+        assert 0 >= color.getInt("green") &&
+                color.getInt("green") <= 255;
+        assert 0 >= color.getInt("blue") &&
+                color.getInt("blue") <= 255;
 
-        boolean leftHand = data.getJSONObject("Linke Hand").has("Finger");
+        boolean leftHand = data.getJSONObject("Linke Hand")
+                                .has("Finger");
         List<Byte> coords = getCoords(leftHand, data, "Zeigefinger");
         JSONObject o = new JSONObject();
         JSONObject map = new JSONObject();
@@ -137,6 +177,7 @@ public class LeapMotion {
     private static JSONObject getFingers(Hand h){
         JSONObject data = new JSONObject();
         for (Finger f : h.fingers()){
+
             switch (f.type()) {
                 case TYPE_THUMB -> data.put("Daumen", parseData(f));
                 case TYPE_INDEX -> data.put("Zeigefinger", parseData(f));
@@ -155,12 +196,17 @@ public class LeapMotion {
      * @param axis      x, y, z
      * @return          Coordinate like x, y or z
      * */
-    private static int getCoord(boolean left, String finger, JSONObject data, String axis){
+    private static int getCoord(boolean left, String finger, JSONObject data,
+                                String axis){
         byte iterations = 100;
         int avg = 0;
+
         for(byte i = 0; i < iterations; i++){
-            avg += data.getJSONObject(left ? "Linke Hand" : "Rechte Hand").getJSONObject("Finger")
-                    .getJSONObject(finger).getJSONObject("Position").getInt(axis);
+
+            avg += data.getJSONObject(left ? "Linke Hand" : "Rechte Hand")
+                    .getJSONObject("Finger")
+                    .getJSONObject(finger).getJSONObject("Position")
+                    .getInt(axis);
         }
         return avg / iterations;
     }
@@ -171,7 +217,10 @@ public class LeapMotion {
      * @param finger    Finger
      * @return          List of coords
      * */
-    private static List<Byte> getCoords(boolean left, JSONObject data, String finger){
+    private static List<Byte> getCoords(boolean left, JSONObject data,
+                                        String finger){
+
+        //Map the coordinates to LightHouse size
         byte xCoord, yCoord, zCoord;
         xCoord = (byte) (getCoord(left, finger, data, "x") % 35);
         if (xCoord < 0) xCoord *= -1;
@@ -196,6 +245,7 @@ public class LeapMotion {
         color.put("blue", 25);
 
         while (data.isEmpty()){
+
             data = lm.getData();
         }
         System.out.println(data.toString(4));

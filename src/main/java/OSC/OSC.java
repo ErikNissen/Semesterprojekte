@@ -4,7 +4,6 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.transport.OSCPortOut;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -15,15 +14,19 @@ public class OSC {
     private static String ip;
     private static Integer port;
     public void Sender(String path, JSONObject param){
-        assert param.has("xCoord") && param.has("yCoord") && param.has("red")
+        assert param.has("xCoord") && param.has("yCoord") &&
+                param.has("red")
                 && param.has("green") && param.has("blue");
 
 
         try {
+
             OSCPortOut sender = null;
             while (sender == null){
+
                 try {
-                    sender = new OSCPortOut(InetAddress.getByName(this.getIP()), this.getPort());
+                    sender = new OSCPortOut(InetAddress.getByName(this.getIP()),
+                                                        this.getPort());
                 } catch (SocketException ignored) {
                 }
             }
@@ -33,13 +36,15 @@ public class OSC {
             data.add(param.getInt("g"));
             data.add(param.getInt("b"));
 
-            path = path + "x" + param.getInt("x") + "y" + param.getInt("y");
+            path = path + "x" + param.getInt("x") + "y" +
+                    param.getInt("y");
 
             OSCMessage msg = new OSCMessage(path, data);
 
             sender.send(msg);
 
         }catch (IOException | OSCSerializeException e){
+
             e.printStackTrace();
         }
     }
